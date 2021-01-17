@@ -97,7 +97,7 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 30.0),
               _buildPasswordInput(bloc),
               SizedBox(height: 30.0),
-              _buildLoginButton(),
+              _buildLoginButton(bloc, context),
             ],
           ),
         ),
@@ -155,21 +155,33 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoginButton() {
-    return RaisedButton(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-        child: Text('Ingresar'),
-      ),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5.0)
-      ),
-      elevation: 0.0,
-      color: Colors.deepPurple,
-      textColor: Colors.white,
-      onPressed: () {
-
+  Widget _buildLoginButton(LoginBloc bloc, BuildContext context) {
+    return StreamBuilder(
+      stream: bloc.formValidStream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return RaisedButton(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+            child: Text('Ingresar'),
+          ),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0)
+          ),
+          elevation: 0.0,
+          color: Colors.deepPurple,
+          textColor: Colors.white,
+          onPressed: snapshot.hasData ? () => _login(bloc, context) : null,
+        );
       },
     );
+  }
+
+  _login(LoginBloc bloc, BuildContext context) {
+    print('=============');
+    print('email: ${ bloc.email }');
+    print('password: ${ bloc.password }');
+    print('=============');
+
+    Navigator.pushReplacementNamed(context, 'home');
   }
 }
