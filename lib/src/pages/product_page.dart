@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:form_validation/src/models/product_model.dart';
 import 'package:form_validation/src/utils/utils.dart' as utils;
 
 class ProductPage extends StatefulWidget {
@@ -9,6 +10,8 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   final formKey = GlobalKey<FormState>();
+
+  ProductModel product = new ProductModel();
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +34,7 @@ class _ProductPageState extends State<ProductPage> {
                 _buildName(),
                 _buildPrice(),
                 SizedBox(height: 15),
+                _buildIsAvailable(),
                 _buildSubmitButton(),
               ],
             ),
@@ -42,10 +46,13 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _buildName() {
     return TextFormField(
+      initialValue: product.title,
       textCapitalization: TextCapitalization.sentences,
       decoration: InputDecoration(labelText: 'Producto'),
+      //se ejecuta despues de validar el campo
+      onSaved: (value) => product.title = value,
       validator: (value) {
-        if(value.length < 5) {
+        if (value.length < 5) {
           return 'Ingrese el nombre del producto';
         } else {
           return null;
@@ -56,10 +63,12 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _buildPrice() {
     return TextFormField(
+      initialValue: product.value.toString(),
       keyboardType: TextInputType.numberWithOptions(),
       decoration: InputDecoration(labelText: 'Producto'),
+      onSaved: (val) => product.value = double.parse(val),
       validator: (value) {
-        if(utils.isNumeric(value)) {
+        if (utils.isNumeric(value)) {
           return null;
         } else {
           return 'Sólo números';
@@ -83,7 +92,23 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   void _submit() {
-    if(!formKey.currentState.validate()) return;
-    print('ok');
+    if (!formKey.currentState.validate()) return;
+
+    formKey.currentState.save();
+
+    print(product.title);
+    print(product.value);
+    print(product.available);
+  }
+
+  Widget _buildIsAvailable() {
+    return SwitchListTile(
+      title: Text('Disponible'),
+      value: product.available,
+      activeColor: Colors.deepPurple,
+      onChanged: (val) => setState(() {
+        product.available = val;
+      }),
+    );
   }
 }
