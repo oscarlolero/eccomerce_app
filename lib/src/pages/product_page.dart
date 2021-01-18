@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validation/src/models/product_model.dart';
+import 'package:form_validation/src/providers/products_provider.dart';
 import 'package:form_validation/src/utils/utils.dart' as utils;
 
 class ProductPage extends StatefulWidget {
@@ -10,6 +11,7 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   final formKey = GlobalKey<FormState>();
+  final productsProvider = new ProductsProvider();
 
   ProductModel product = new ProductModel();
 
@@ -99,6 +101,9 @@ class _ProductPageState extends State<ProductPage> {
     print(product.title);
     print(product.value);
     print(product.available);
+
+    productsProvider.createProduct(product);
+
   }
 
   Widget _buildIsAvailable() {
