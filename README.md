@@ -1,6 +1,6 @@
-# form_validation
+# Eccomerce app
 
-Form validation with state management via BLoC
+Basic eccomerce CRUD app with form validation with state management via BLoC
 
 ## Getting Started
 
