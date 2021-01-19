@@ -49,7 +49,7 @@ class ProductsProvider {
 
   Future<int> deleteProduct(String id) async {
     final url = '$_url/products/$id.json';
-    final response = await http.delete(url);
+    await http.delete(url);
 
     return 1;
   }

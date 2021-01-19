@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:form_validation/src/bloc/provider.dart';
 import 'package:form_validation/src/models/product_model.dart';
 import 'package:form_validation/src/providers/products_provider.dart';
 
