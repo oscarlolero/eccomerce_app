@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:form_validation/src/bloc/login_bloc.dart';
 import 'package:form_validation/src/bloc/provider.dart';
+import 'package:form_validation/src/providers/user_provider.dart';
 
 class RegisterPage extends StatelessWidget {
+
+  final userProvider = new UserProvider();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,7 +97,7 @@ class RegisterPage extends StatelessWidget {
               SizedBox(height: 30.0),
               _buildPasswordInput(bloc),
               SizedBox(height: 30.0),
-              _buildLoginButton(bloc, context),
+              _buildRegisterButton(bloc, context),
             ],
           ),
         ),
@@ -150,7 +154,7 @@ class RegisterPage extends StatelessWidget {
         });
   }
 
-  Widget _buildLoginButton(LoginBloc bloc, BuildContext context) {
+  Widget _buildRegisterButton(LoginBloc bloc, BuildContext context) {
     return StreamBuilder(
       stream: bloc.formValidStream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -164,18 +168,15 @@ class RegisterPage extends StatelessWidget {
           elevation: 0.0,
           color: Colors.deepPurple,
           textColor: Colors.white,
-          onPressed: snapshot.hasData ? () => _login(bloc, context) : null,
+          onPressed: snapshot.hasData ? () => _register(bloc, context) : null,
         );
       },
     );
   }
 
-  _login(LoginBloc bloc, BuildContext context) {
-    print('=============');
-    print('email: ${bloc.email}');
-    print('password: ${bloc.password}');
-    print('=============');
+  _register(LoginBloc bloc, BuildContext context) async {
 
-    Navigator.pushReplacementNamed(context, 'home');
+    final result = await userProvider.newUser(bloc.email, bloc.password);
+    print(result);
   }
 }
