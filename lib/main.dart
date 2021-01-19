@@ -4,8 +4,16 @@ import 'package:form_validation/src/pages/home_page.dart';
 import 'package:form_validation/src/pages/login_page.dart';
 import 'package:form_validation/src/pages/product_page.dart';
 import 'package:form_validation/src/pages/register_page.dart';
+import 'package:form_validation/src/shared_preferences/user_preferences.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  //cargar desde un inicio las preferencias del usuario
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = new UserPreferences();
+  await prefs.initPrefs();
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override

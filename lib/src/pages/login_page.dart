@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:form_validation/src/bloc/login_bloc.dart';
 import 'package:form_validation/src/bloc/provider.dart';
 import 'package:form_validation/src/providers/user_provider.dart';
+import 'package:form_validation/src/shared_preferences/user_preferences.dart';
 
 class LoginPage extends StatelessWidget {
 
@@ -9,6 +10,8 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final prefs = new UserPreferences();
+    print(prefs.token);
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
