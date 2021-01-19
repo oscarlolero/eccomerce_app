@@ -113,13 +113,18 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
-  void _submit() {
+  void _submit() async {
     if (!formKey.currentState.validate()) return;
 
     formKey.currentState.save();
     setState(() {
       _saving = true;
     });
+
+    if(photo != null) {
+      product.photoUrl = await productsProvider.uploadImage(photo);
+    }
+
     if (product.id == null) {
       productsProvider.createProduct(product);
     } else {
@@ -150,7 +155,13 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _showPhoto() {
     if(product.photoUrl != null) {
-      return Container();
+      return FadeInImage(
+        placeholder: AssetImage('assets/jar-loading.gif'),
+        image: NetworkImage(product.photoUrl),
+        height: 300.0,
+        width: double.infinity,
+        fit: BoxFit.contain,
+      );
     } else {
       return Image(
         //photo tiene valor? y si si lo tiene, toma el path, si es nulo, usa 'assets/no-image.png'
