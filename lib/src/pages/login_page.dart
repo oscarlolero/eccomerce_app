@@ -3,6 +3,7 @@ import 'package:form_validation/src/bloc/login_bloc.dart';
 import 'package:form_validation/src/bloc/provider.dart';
 import 'package:form_validation/src/providers/user_provider.dart';
 import 'package:form_validation/src/shared_preferences/user_preferences.dart';
+import 'package:form_validation/src/utils/utils.dart' as utils;
 
 class LoginPage extends StatelessWidget {
 
@@ -10,8 +11,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final prefs = new UserPreferences();
-    print(prefs.token);
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
@@ -177,10 +176,14 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _login(LoginBloc bloc, BuildContext context) {
+  _login(LoginBloc bloc, BuildContext context) async {
 
-    userProvider.login(bloc.email, bloc.password);
+    final Map result = await userProvider.login(bloc.email, bloc.password);
 
-    // Navigator.pushReplacementNamed(context, 'home');
+    if(result['ok']) {
+      Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      utils.showAlert(context, result['message']);
+    }
   }
 }

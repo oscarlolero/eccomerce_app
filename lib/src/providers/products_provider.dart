@@ -5,13 +5,17 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mime_type/mime_type.dart';
 
 import 'package:form_validation/src/models/product_model.dart';
+import 'package:form_validation/src/shared_preferences/user_preferences.dart';
+
 
 class ProductsProvider {
   final String _url =
       'https://flutter-course-5b319-default-rtdb.firebaseio.com';
 
+  final _prefs = new UserPreferences();
+
   Future<bool> createProduct(ProductModel product) async {
-    final url = '$_url/products.json';
+    final url = '$_url/products.json?auth=${_prefs.token}';
     final response = await http.post(url, body: productModelToJson(product));
 
     final decodedData = json.decode(response.body);
@@ -20,7 +24,7 @@ class ProductsProvider {
   }
 
   Future<bool> editProduct(ProductModel product) async {
-    final url = '$_url/products/${product.id}.json';
+    final url = '$_url/products/${product.id}.json?auth=${_prefs.token}';
     final response = await http.put(url, body: productModelToJson(product));
 
     final decodedData = json.decode(response.body);
@@ -29,7 +33,7 @@ class ProductsProvider {
   }
 
   Future<List<ProductModel>> loadProducts() async {
-    final url = '$_url/products.json';
+    final url = '$_url/products.json?auth=${_prefs.token}';
     final response = await http.get(url);
 
     final Map<String, dynamic> decodedData = json.decode(response.body);
@@ -48,7 +52,7 @@ class ProductsProvider {
   }
 
   Future<int> deleteProduct(String id) async {
-    final url = '$_url/products/$id.json';
+    final url = '$_url/products/$id.json?auth=${_prefs.token}';
     await http.delete(url);
 
     return 1;
