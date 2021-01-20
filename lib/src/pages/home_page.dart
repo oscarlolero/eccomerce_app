@@ -1,18 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:form_validation/src/bloc/products_bloc.dart';
+import 'package:form_validation/src/bloc/provider.dart';
 import 'package:form_validation/src/models/product_model.dart';
-import 'package:form_validation/src/providers/products_provider.dart';
 
-class HomePage extends StatelessWidget {
-  final productsProvider = new ProductsProvider();
+class HomePage extends StatefulWidget {
 
   @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
   Widget build(BuildContext context) {
+    final productsBloc = Provider.productsBloc(context);
+    productsBloc.loadingProducts();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Home page'),
       ),
-      body: _builList(),
+      body: _builList(productsBloc),
       floatingActionButton: _buildButton(context),
     );
   }
@@ -21,36 +29,35 @@ class HomePage extends StatelessWidget {
     return FloatingActionButton(
       child: Icon(Icons.add),
       backgroundColor: Colors.deepPurple,
-      onPressed: () => Navigator.pushNamed(context, 'product'),
+      onPressed: () => Navigator.pushNamed(context, 'product').then((value) => setState(() {})),
     );
   }
 
-  Widget _builList() {
-    return FutureBuilder(
-        future: productsProvider.loadProducts(),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<ProductModel>> snapshot) {
-          if (snapshot.hasData) {
-            final products = snapshot.data;
+  Widget _builList(ProductsBloc productsBloc) {
+    return StreamBuilder(
+      stream: productsBloc.productsStream,
+      builder:
+          (BuildContext context, AsyncSnapshot<List<ProductModel>> snapshot) {
+        if (snapshot.hasData) {
+          final products = snapshot.data;
 
-            return ListView.builder(
-                itemCount: products.length,
-                itemBuilder: (context, i) => _buildItem(context, products[i]));
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        });
+          return ListView.builder(
+              itemCount: products.length,
+              itemBuilder: (context, i) => _buildItem(context, productsBloc, products[i]));
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
   }
 
-  Widget _buildItem(BuildContext context, ProductModel product) {
+  Widget _buildItem(BuildContext context, ProductsBloc productsBloc, ProductModel product) {
     return Dismissible(
       key: UniqueKey(),
       background: Container(
         color: Colors.red,
       ),
-      onDismissed: (direction) {
-        productsProvider.deleteProduct(product.id);
-      },
+      onDismissed: (direction) => productsBloc.deleteProduct(product.id),
       child: Card(
         margin: EdgeInsets.all(10.0),
         elevation: 5,
@@ -69,7 +76,7 @@ class HomePage extends StatelessWidget {
               title: Text('${product.title} - ${product.value}'),
               subtitle: Text(product.id),
               onTap: () =>
-                  Navigator.pushNamed(context, 'product', arguments: product),
+                  Navigator.pushNamed(context, 'product', arguments: product).then((value) => setState(() {})),
             ),
           ],
         ),

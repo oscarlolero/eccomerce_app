@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:form_validation/src/bloc/login_bloc.dart';
 import 'package:form_validation/src/bloc/provider.dart';
 import 'package:form_validation/src/providers/user_provider.dart';
-import 'package:form_validation/src/shared_preferences/user_preferences.dart';
 import 'package:form_validation/src/utils/utils.dart' as utils;
 
 class LoginPage extends StatelessWidget {
